@@ -6,20 +6,23 @@
 
 //FE class implements shape functions, values and derivatives
 
-class FiniteElement
+class FiniteElement2D
 {
 public:
-	FiniteElement(const unsigned int& numNodes,
+	FiniteElement2D(const unsigned int& numNodes,
 				const std::vector<std::pair<double,double>>& nodeLocations,
 				const std::vector<unsigned int>& nodeEnumerations);
-	virtual ~FiniteElement(void);
+	virtual ~FiniteElement2D(void);
 
-	unsigned int get_num_nodes() const;
+	unsigned int num_nodes() const;
+	const std::vector<unsigned int>& node_enums() const;
+	const std::vector<std::pair<double,double>>& node_locations() const;
 
+	//Shape Function Values
 	virtual double shape_value ( const unsigned int& node, 
-								const std::pair<double,double>& point) const;
+		const std::pair<double,double>& point) const = 0;
 	virtual std::pair<double,double> shape_values_grad(const unsigned int& node, 
-													const std::pair<double,double>& point) const;
+		const std::pair<double,double>& point) const = 0;
 
 private:
 	unsigned int numNodes_;
