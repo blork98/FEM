@@ -14,6 +14,16 @@ FiniteElement2D::FiniteElement2D(const unsigned int& numNodes,
 FiniteElement2D::~FiniteElement2D(void)
 {};
 
+unsigned int FiniteElement2D::convert_node_glob_to_loc( const unsigned int& globalNode) const
+{
+	unsigned int pos = 0;
+
+	while( nodeEnumerations_[pos] != globalNode )
+		pos++;
+
+	return pos;
+};
+
 unsigned int FiniteElement2D::num_nodes() const
 {
 	return numNodes_;
@@ -26,6 +36,6 @@ const vector<unsigned int>& FiniteElement2D::node_enums() const
 
 const vector<pair<double,double>>& FiniteElement2D::node_locations() const {
 	return nodeLocations_;
-}
+};
 
 

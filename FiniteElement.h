@@ -24,7 +24,9 @@ public:
 	virtual std::pair<double,double> shape_values_grad(const unsigned int& node, 
 		const std::pair<double,double>& point) const = 0;
 
-private:
+protected:
+	unsigned int convert_node_glob_to_loc( const unsigned int& globalNode) const;
+
 	unsigned int numNodes_;
 	std::vector<std::pair<double,double>> nodeLocations_;
 	std::vector<unsigned int> nodeEnumerations_;
