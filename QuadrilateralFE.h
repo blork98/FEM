@@ -10,9 +10,9 @@ public:
 					const std::vector<unsigned int>& nodeEnumerations);
 
 	virtual double shape_value ( const unsigned int& node, 
-		const std::pair<double,double>& point) const = 0;
+		const std::pair<double,double>& point) const;
 	virtual std::pair<double,double> shape_values_grad(const unsigned int& node, 
-		const std::pair<double,double>& point) const = 0;
+		const std::pair<double,double>& point) const;
 private:
 
 };
