@@ -54,22 +54,26 @@ std::pair<double,double> BilinearQuadFE::shape_values_grad(const unsigned int& n
 		case 0:
 			x0 = nodeLocations_[1].first;
 			y0 = nodeLocations_[3].second;
-			value.first = 0.25*(x0 - point.first)*(y0 - point.second);
+			value.first = 0.25*(-1)*(y0 - point.second);
+			value.second = 0.25*(x0 - point.first)*(-1);
 			break;
 		case 1:
 			x0 = nodeLocations_[0].first;
 			y0 = nodeLocations_[2].second;
-			value.first = 0.25*(x0 + point.first)*(y0 - point.second);
+			value.first = 0.25*(1)*(y0 - point.second);
+			value.second = 0.25*(x0 + point.first)*(-1);
 			break;
 		case 2:
 			x0 = nodeLocations_[3].first;
 			y0 = nodeLocations_[1].second;
-			value.first = 0.25*(x0 + point.first)*(y0 + point.second);
+			value.first = 0.25*(1)*(y0 + point.second);
+			value.second = 0.25*(x0 + point.first)*(1);
 			break;
 		case 3:
 			x0 = nodeLocations_[0].first;
 			y0 = nodeLocations_[2].second;
-			value.first = 0.25*(x0 - point.first)*(y0 + point.second);
+			value.first = 0.25*(-1)*(y0 + point.second);
+			value.first = 0.25*(x0 - point.first)*(1);
 			break;
 		default:
 			break;
