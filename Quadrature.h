@@ -1,27 +1,34 @@
 #ifndef QUADRATURE_H_
 #define QUADRATURE_H_
 
-#include<vector>
+#include <vector>
+#include <boost/tuple/tuple.hpp>
+#include <QuadratureGenerator.h>
 
-//pass singleton class which generates quad points 1D and this class converts it to 2D, 3D etc
-class QuadratureGenerator1D;
+class QuadratureGenerator;
 
 class Quadrature
 {
 public:
-	Quadrature( const unsigned int& numDims, const unsigned int& pointsPerDim);
+	Quadrature( const size_t& numDims, const size_t& pointsPerDim, 
+		const QuadratureGenerator& quadGen);
 
-	unsigned int num_dims() const;
-	unsigned int points_per_dim() const;
-
-	const std::pair<std::vector<double>,double>& get_quad_info(const unsigned int& i) const;
+	size_t num_dims() const;
+	size_t points_per_dim() const;
+	size_t size() const;
 	
-protected:
-	void initialize_quad_info();
+	const std::vector<double>& get_weights() const;
+	const double& get_weight(size_t i) const;
+	const std::vector<std::vector<double>>& get_points() const;
+	const std::vector<double>& get_point(size_t i) const;
 
-	unsigned int numDims_;
-	unsigned int pointsPerDim_;
-	std::pair<std::vector<double>,double> quadInfo_;
+protected:
+	void initialize_quad_info(const QuadratureGenerator& quadGen);
+
+	size_t numDims_;
+	size_t pointsPerDim_;
+	std::vector<double> weights_;
+	std::vector<std::vector<double>> points_;
 };
 
 #endif

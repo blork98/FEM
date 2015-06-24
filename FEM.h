@@ -2,6 +2,9 @@
 #define FEM_H_
 
 #include <FiniteElement.h>
+#include <QuadrilateralFE.h>
+#include <Quadrature.h>
+#include <QuadratureGenerator.h>
 
 #define NAME "FEM"
 
