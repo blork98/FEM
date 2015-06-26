@@ -3,10 +3,10 @@
 
 #include <Mapping.h>
 
-class BilinearQuadMapping : public Mapping 
+class BilinearQuadMapping2D : public Mapping 
 {
 public:
-	BilinearQuadMapping( const std::vector<std::vector<double>>& nodeLocations);
+	BilinearQuadMapping2D( const std::vector<std::pair<double,double>>& nodeLocations);
 
 	virtual void transform_real_to_master( const std::vector<double>& rPoint, 
 										std::vector<double>& mPoint) const;
@@ -14,7 +14,12 @@ public:
 										std::vector<double>& rPoint) const;
 
 private:
-	std::vector<std::vector<double>> nodeLocations_;
+	double shape_value(	const unsigned int& node, 
+						const std::pair<double,double>& point) const;
+	std::pair<double,double> shape_grad_value( const unsigned int& node, 
+											const std::pair<double,double>& point) const;
+
+	std::vector<std::pair<double,double>> nodeLocations_;
 	size_t numNodes_;
 };
 
