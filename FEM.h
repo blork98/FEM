@@ -5,6 +5,7 @@
 #include <QuadrilateralFE.h>
 #include <Quadrature.h>
 #include <QuadratureGenerator.h>
+#include <CartesianMapping.h>
 
 #define NAME "FEM"
 

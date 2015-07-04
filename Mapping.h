@@ -12,6 +12,8 @@ public:
 										std::vector<double>& mPoint) const = 0;
 	virtual void transform_master_to_real( const std::vector<double>& mPoint, 
 										std::vector<double>& rPoint) const= 0;
+	virtual void get_jacobian_matrix( std::vector<double>& jMat, 
+                                    double& jacobian) const = 0;
 	const unsigned int& dim() const;
 private:
 	unsigned int dim_;
