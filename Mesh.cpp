@@ -107,20 +107,23 @@ void MeshElement2D::set_node_number( const unsigned int& numNodes )
 
 Mesh2D::Mesh2D( const boost::shared_ptr<FiniteElement2D>& masterElement,
 		  const std::vector<std::pair<double,double>>& nodeLocations,
-		  const std::vector<std::list<unsigned int>>& nodeAdjacency,
-		  const std::vector<std::list<unsigned int>>& nodesInElement)
+		  const std::vector<std::vector<unsigned int>>& nodeAdjacency,
+		  const std::vector<std::vector<unsigned int>>& nodesInElement,
+		  const std::vector<unsigned int>&nodeMapToMasterElem)
 		  :masterElement_(masterElement), nodeLocations_(nodeLocations),
 		  nodeAdjacency_(nodeAdjacency_), nodesInElement_(nodesInElement),
-		  meshElements_(nodesInElement.size(), MeshElement2D(nodesInElement[0].size())), 
-		  numElements_(nodesInElement.size())
+		  //meshElements_(nodesInElement.size()), 
+		  numElements_(nodesInElement.size()),
+		  nodeMapToMasterElem_(nodeMapToMasterElem)
 {
 	create_mesh_elements();
 };
 
+
 void Mesh2D::create_mesh_elements()
 {
 	for ( unsigned int elemCtr = 0; elemCtr < numElements_; ++elemCtr ) {
-
+		
 		unsigned int numNodes = nodesInElement_[elemCtr].size();
 		meshElements_[elemCtr].set_master_element(masterElement_);
 		meshElements_[elemCtr].set_node_number( numNodes );
@@ -131,5 +134,26 @@ void Mesh2D::create_mesh_elements()
 			meshElements_[elemCtr][nodeCtr].set_node_num(*nodePtr);
 			nodePtr++;
 		}
+		
 	}
+};
+
+unsigned int Mesh2D::num_elements() const
+{
+	return numElements_;
+};
+
+const std::vector<unsigned int>& Mesh2D::get_nodes_in_element( unsigned int elem) const
+{
+	return nodesInElement_[elem];
+};
+
+const std::pair<double,double>& Mesh2D::get_node_location( unsigned int node ) const
+{
+	return nodeLocations_[node];	
+};
+
+unsigned int Mesh2D::get_node_map_to_master( unsigned int node) const
+{
+	return nodeMapToMasterElem_[node];
 };

@@ -14,7 +14,7 @@ public:
     void transform_master_to_real( 
 		const std::vector<double>& mPoint, std::vector<double>& rPoint) const;
     void get_jacobian_matrix( std::vector<double>& jMat, double& jacobian) const;
-    
+    // [de/dx,de/dy,dn/dx,dn/dy]
     void set_point(const std::vector<double>& evalPoint);
     void set_node_locations( const std::vector<std::pair<double,double> >& nodeLocations);
     void set_node_locations_master( const std::vector<std::pair<double,double> >& nodeLocations);
