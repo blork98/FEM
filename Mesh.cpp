@@ -46,19 +46,19 @@ class MeshElement2D
 {
   public:
 	MeshElement2D(int numNodes = 0);
-	MeshElement2D( const boost::shared_ptr<FiniteElement2D>& masterElement, 
+	MeshElement2D( const std::shared_ptr<FiniteElement2D>& masterElement, 
 		const std::vector<Node2D>& nodes);
 
 	unsigned int num_nodes() const;
-	const boost::shared_ptr<FiniteElement2D>& get_master_element() const;
-	void set_master_element( const boost::shared_ptr<FiniteElement2D>& masterElement );
+	const std::shared_ptr<FiniteElement2D>& get_master_element() const;
+	void set_master_element( const std::shared_ptr<FiniteElement2D>& masterElement );
 	void set_node_number( const unsigned int& numNodes );
 
 	Node2D& operator[] (const unsigned int& i );
 	const Node2D& operator[] ( const unsigned int& i) const;
 
   private:
-	boost::shared_ptr<FiniteElement2D> masterElement_;
+	std::shared_ptr<FiniteElement2D> masterElement_;
 	std::vector<Node2D> nodes_;
 };
 
@@ -66,17 +66,17 @@ MeshElement2D::MeshElement2D(int numNodes)
 		:nodes_(numNodes)
 {};
 
-MeshElement2D::MeshElement2D(const boost::shared_ptr<FiniteElement2D>& masterElement, 
+MeshElement2D::MeshElement2D(const std::shared_ptr<FiniteElement2D>& masterElement, 
 		const std::vector<Node2D>& nodes)
 		: masterElement_(masterElement), nodes_(nodes)
 {};
 
-void MeshElement2D::set_master_element( const boost::shared_ptr<FiniteElement2D>& masterElement )
+void MeshElement2D::set_master_element( const std::shared_ptr<FiniteElement2D>& masterElement )
 {
 	masterElement_ = masterElement;
 };
 
-const boost::shared_ptr<FiniteElement2D>& MeshElement2D::get_master_element() const
+const std::shared_ptr<FiniteElement2D>& MeshElement2D::get_master_element() const
 {
 	return masterElement_;
 };
@@ -105,11 +105,11 @@ void MeshElement2D::set_node_number( const unsigned int& numNodes )
 //////////////////////////////////////////////////////////////////////////////////////
 // Mesh Class
 
-Mesh2D::Mesh2D( const boost::shared_ptr<FiniteElement2D>& masterElement,
+Mesh2D::Mesh2D( const std::shared_ptr<FiniteElement2D>& masterElement,
 		  const std::vector<std::pair<double,double>>& nodeLocations,
 		  const std::vector<std::vector<unsigned int>>& nodeAdjacency,
 		  const std::vector<std::vector<unsigned int>>& nodesInElement,
-		  const std::vector<unsigned int>&nodeMapToMasterElem)
+		  const std::vector<std::vector<unsigned int>>&nodeMapToMasterElem)
 		  :masterElement_(masterElement), nodeLocations_(nodeLocations),
 		  nodeAdjacency_(nodeAdjacency_), nodesInElement_(nodesInElement),
 		  //meshElements_(nodesInElement.size()), 
@@ -122,6 +122,7 @@ Mesh2D::Mesh2D( const boost::shared_ptr<FiniteElement2D>& masterElement,
 
 void Mesh2D::create_mesh_elements()
 {
+	/*
 	for ( unsigned int elemCtr = 0; elemCtr < numElements_; ++elemCtr ) {
 		
 		unsigned int numNodes = nodesInElement_[elemCtr].size();
@@ -136,6 +137,7 @@ void Mesh2D::create_mesh_elements()
 		}
 		
 	}
+	*/
 };
 
 unsigned int Mesh2D::num_elements() const
@@ -153,7 +155,14 @@ const std::pair<double,double>& Mesh2D::get_node_location( unsigned int node ) c
 	return nodeLocations_[node];	
 };
 
-unsigned int Mesh2D::get_node_map_to_master( unsigned int node) const
+unsigned int Mesh2D::get_node_map_to_master( unsigned int elem, unsigned int node) const
 {
-	return nodeMapToMasterElem_[node];
+	const std::vector<unsigned int>& nodes = nodeMapToMasterElem_[elem];
+
+	unsigned int pos = 0;
+
+	while( nodes[pos] != node )
+		pos++;
+
+	return pos;
 };

@@ -77,16 +77,16 @@ std::pair<double,double> BilinearQuadFE::shape_values_grad(const unsigned int& n
 			y0 = nodeLocations_[1].second;
 			normalizer = 1/((x0 - nodeLocations_[2].first)*(y0 - nodeLocations_[2].second ));
 			//value = normalizer*(x0 - point.first)*(y0 - point.second);
-			value.first = normalizer*(-1)*(y0 + point.second);
-			value.second = normalizer*(x0 + point.first)*(-1);
+			value.first = normalizer*(-1)*(y0 - point.second);
+			value.second = normalizer*(x0 - point.first)*(-1);
 			break;
 		case 3:
 			x0 = nodeLocations_[2].first;
 			y0 = nodeLocations_[0].second;
 			normalizer = 1/((x0 - nodeLocations_[3].first)*(y0 - nodeLocations_[3].second ));
 			//value = normalizer*(x0 - point.first)*(y0 - point.second);
-			value.first = normalizer*(-1)*(y0 + point.second);
-			value.first = normalizer*(x0 - point.first)*(-1);
+			value.first = normalizer*(-1)*(y0 - point.second);
+			value.second = normalizer*(x0 - point.first)*(-1);
 			break;
 		default:
 			break;

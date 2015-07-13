@@ -1,11 +1,11 @@
 #include <FECalculationEngine.h>
 
 FECalculationEngine2D::FECalculationEngine2D(
-		const boost::shared_ptr<FiniteElement2D>& masterElement,
-		const boost::shared_ptr<Mapping>& map, 
-		const boost::shared_ptr<Quadrature>& quadInfo,
-		const boost::shared_ptr<Mesh2D>& mesh,
-		const boost::shared_ptr<Data2D>& data )
+		const std::shared_ptr<FiniteElement2D>& masterElement,
+		const std::shared_ptr<Mapping>& map, 
+		const std::shared_ptr<Quadrature>& quadInfo,
+		const std::shared_ptr<Mesh2D>& mesh,
+		const std::shared_ptr<Data2D>& data )
 		: masterElement_(masterElement), map_(map), quadInfo_(quadInfo),
 		mesh_(mesh), data_(data), 
 		jMatrix(quadInfo->num_dims()*quadInfo_->num_dims(),0.0),
@@ -19,51 +19,51 @@ void FECalculationEngine2D::initialize()
 	map_->set_node_locations_master(masterElement_->node_locations());
 };
 
-void FECalculationEngine2D::set_master_element(const boost::shared_ptr<FiniteElement2D>& masterElement)
+void FECalculationEngine2D::set_master_element(const std::shared_ptr<FiniteElement2D>& masterElement)
 {
 	masterElement_= masterElement;
 };
 
-void FECalculationEngine2D::set_mapping(const boost::shared_ptr<Mapping>& map)
+void FECalculationEngine2D::set_mapping(const std::shared_ptr<Mapping>& map)
 {
 	map_ = map;
 };
 
-void FECalculationEngine2D::set_quadrature(const boost::shared_ptr<Quadrature>& quadInfo)
+void FECalculationEngine2D::set_quadrature(const std::shared_ptr<Quadrature>& quadInfo)
 {
 	quadInfo_ = quadInfo;
 };
 
-void FECalculationEngine2D::set_mesh(const boost::shared_ptr<Mesh2D>& mesh)
+void FECalculationEngine2D::set_mesh(const std::shared_ptr<Mesh2D>& mesh)
 {
 	mesh_ = mesh;
 };
 
-const boost::shared_ptr<FiniteElement2D>& FECalculationEngine2D::get_master_elem() const
+const std::shared_ptr<FiniteElement2D>& FECalculationEngine2D::get_master_elem() const
 {
 	return masterElement_;
 };
 
-const boost::shared_ptr<Mapping>& FECalculationEngine2D::get_mapping() const
+const std::shared_ptr<Mapping>& FECalculationEngine2D::get_mapping() const
 {
 	return map_;
 };
 
-const boost::shared_ptr<Quadrature>& FECalculationEngine2D::get_quad_info() const
+const std::shared_ptr<Quadrature>& FECalculationEngine2D::get_quad_info() const
 {
 	return quadInfo_;	
 };
 
-const  boost::shared_ptr<Mesh2D>& FECalculationEngine2D::get_mesh() const
+const  std::shared_ptr<Mesh2D>& FECalculationEngine2D::get_mesh() const
 {
 	return mesh_;
 };
 
-void FECalculationEngine2D::calculate_f( unsigned int element, std::vector<double>& globalF) const
+void FECalculationEngine2D::calculate_f( unsigned int finiteElement, std::vector<double>& globalF) const
 {
 	using std::vector;
 
-	const vector<unsigned int>& nodesInElement = mesh_->get_nodes_in_element(element);
+	const vector<unsigned int>& nodesInElement = mesh_->get_nodes_in_element(finiteElement);
 
 	//get integration points
 	const vector<double>& weights = quadInfo_->get_weights();
@@ -85,7 +85,7 @@ void FECalculationEngine2D::calculate_f( unsigned int element, std::vector<doubl
 	for( auto node : nodesInElement )
 	{
 		const std::pair<double,double>& nodeLocation = mesh_->get_node_location(node); 
-		unsigned int nodeInMaster = mesh_->get_node_map_to_master(node);
+		unsigned int nodeInMaster = mesh_->get_node_map_to_master(finiteElement,node);
 		globalF[node] = 0.0;
 		u = 0.0; 
 	
