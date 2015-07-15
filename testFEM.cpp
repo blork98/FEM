@@ -107,6 +107,19 @@ void test2DFEM()
 	std::shared_ptr<Data2D> data = std::make_shared<ConstantData2D>(1,1,1,1,1);
 
 	//Create Calculation Engine
+	FECalculationEngine2D engine(masterElement,mapping,quadInfo,mesh,data);
+
+	//Test F Calculations
+	unsigned int numNodes = 9;
+	std::cout<<"F Values"<<std::endl;
+	std::vector<double> fValues(numNodes,0.0);
+	for( unsigned int elemCtr = 0; elemCtr < mesh->num_elements(); ++elemCtr )
+	{
+		std::cout<<"Element:"<<elemCtr<<std::endl;
+		engine.calculate_f(elemCtr,fValues);
+		for( unsigned int i = 0; i <fValues.size(); ++i )
+			std::cout<<"Node:"<<i<<" Value:"<<fValues[i]<<std::endl;
+	};
 
 };
 

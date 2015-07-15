@@ -29,7 +29,10 @@ public:
 	const std::shared_ptr<Mesh2D>& get_mesh() const;
 
 	void calculate_f( unsigned int element, std::vector<double>& values) const;
-	void calculate_k( unsigned int element) const;
+	void calculate_k( unsigned int element, std::vector<std::vector<double>>& matrix) const;
+
+	double calculate_f( unsigned int element, unsigned int node) const;
+	double calculate_k( unsigned int element, unsigned int nodeI, unsigned int nodeJ) const;
 
 private:
 	std::shared_ptr<FiniteElement2D> masterElement_;
