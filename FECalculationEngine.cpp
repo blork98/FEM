@@ -174,9 +174,11 @@ void FECalculationEngine2D::calculate_k( unsigned int finiteElement, std::vector
 
 
 	//variables
-	double uI =0.0, uJ = 0.0; 
+	double uI = 0.0, uJ = 0.0; 
 	pair<double,double> dudenI, dudenJ;
-	double k = 0.0, b =0.0, jacobian_det = 0.0;
+	double k = 0.0, b = 0.0, jacobian_det = 0.0;
+	double dudxI(0.0), dudyI(0.0), dudxJ(0.0), dudyJ(0.0);
+	double kIJ(0.0);
 
 	for( auto nodeI : nodesInElement ) 
 	{
@@ -187,6 +189,8 @@ void FECalculationEngine2D::calculate_k( unsigned int finiteElement, std::vector
 
 			unsigned int nodeInMasterI = mesh_->get_node_map_to_master(finiteElement,nodeI);
 			unsigned int nodeInMasterJ = mesh_->get_node_map_to_master(finiteElement,nodeJ);
+
+			kIJ = 0.0;
 
 			for( unsigned int pointCtr = 0; pointCtr < weights.size(); ++pointCtr )
 			{
@@ -203,7 +207,17 @@ void FECalculationEngine2D::calculate_k( unsigned int finiteElement, std::vector
 				uJ = masterElement_->shape_value(nodeInMasterJ,integPoint);
 				dudenI = masterElement_->shape_values_grad(nodeInMasterI,integPoint);
 				dudenJ = masterElement_->shape_values_grad(nodeInMasterJ,integPoint);
+
+				dudxI = (1/jacobian_det)*(dudenI.first*jMatrix[0] - dudenI.second*jMatrix[2]);
+				dudyI = (1/jacobian_det)*(-1*dudenI.first*jMatrix[1] + dudenI.second*jMatrix[3]);
+
+				dudxJ = (1/jacobian_det)*(dudenJ.first*jMatrix[0] - dudenJ.second*jMatrix[2]);
+				dudyJ = (1/jacobian_det)*(-1*dudenJ.first*jMatrix[1] + dudenJ.second*jMatrix[3]);
+
+				kIJ += (k*(dudxI*dudxJ - dudyI*dudyJ) + b*uI*uJ)*weights[pointCtr];
 			};
+
+			matrix[nodeI][nodeJ] = kIJ; 
 
 		};
 	};

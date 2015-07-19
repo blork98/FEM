@@ -22,6 +22,7 @@ class Mesh2D
 		  const std::vector<std::vector<unsigned int>>& nodesInElement,
 		  const std::vector<std::vector<unsigned int>>&nodeMapToMasterElem);
 
+	  unsigned int numNodes() const;
 	  unsigned int num_elements() const;
 	  const std::vector<unsigned int>& get_nodes_in_element( unsigned int elem) const;
 	  const std::pair<double,double>& get_node_location( unsigned int node ) const;

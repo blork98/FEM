@@ -166,3 +166,8 @@ unsigned int Mesh2D::get_node_map_to_master( unsigned int elem, unsigned int nod
 
 	return pos;
 };
+
+unsigned int Mesh2D::numNodes() const
+{
+	return nodeLocations_.size();
+};

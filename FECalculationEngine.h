@@ -32,7 +32,7 @@ public:
 	void calculate_k( unsigned int element, std::vector<std::vector<double>>& matrix) const;
 
 	double calculate_f( unsigned int element, unsigned int node) const;
-	double calculate_k( unsigned int element, unsigned int nodeI, unsigned int nodeJ) const;
+	double calculate_k( unsigned int element, unsigned int i, unsigned int j ) const;
 
 private:
 	std::shared_ptr<FiniteElement2D> masterElement_;
