@@ -121,6 +121,16 @@ void test2DFEM()
 			std::cout<<"Node:"<<i<<" Value:"<<fValues[i]<<std::endl;
 	};
 
+	//Test K Calculations
+	std::cout<<"K Values"<<std::endl;
+	std::vector<std::vector<double>> K(numNodes,std::vector<double>(numNodes,0.0));
+
+	for( unsigned int elemCtr = 0; elemCtr < mesh->num_elements(); ++elemCtr )
+	{
+			engine.calculate_k(elemCtr,K);	
+			std::cout<<" After Element "<<elemCtr<<" Calc..."<<std::endl;
+			print_matrix(K);
+	};
 };
 
 void test_FEM()

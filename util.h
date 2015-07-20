@@ -17,5 +17,7 @@ std::shared_ptr<Quadrature> create_quadrature(
 std::shared_ptr<Mapping> create_biliniear_mapping(
 	const std::vector<std::pair<double,double>>& nodeLocations);
 
+void print_matrix( const std::vector<std::vector<double>>& matrix);
+
 
 #endif

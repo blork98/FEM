@@ -1,5 +1,7 @@
 #include "util.h"
 
+#include <iostream>
+
 #include <boost/assign/list_of.hpp>
 
 std::shared_ptr<FiniteElement2D> create_finite_element(
@@ -65,4 +67,19 @@ std::shared_ptr<Mapping> create_biliniear_mapping(
 	const std::vector<std::pair<double,double>>& nodeLocations)
 {
 	return std::make_shared<BilinearQuadMapping2D>(nodeLocations);
+};
+
+void print_matrix( const std::vector<std::vector<double>>& matrix)
+{
+	unsigned int numRows = matrix.size();
+	unsigned int numCols = matrix[0].size();
+
+	for( unsigned int i = 0; i < numRows; ++i )
+	{
+		for( unsigned int j = 0; j < numCols; ++j )
+		{
+			std::cout<<matrix[i][j]<<",";
+		}
+		std::cout<<std::endl;
+	};
 };

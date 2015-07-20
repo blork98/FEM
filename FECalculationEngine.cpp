@@ -208,16 +208,16 @@ void FECalculationEngine2D::calculate_k( unsigned int finiteElement, std::vector
 				dudenI = masterElement_->shape_values_grad(nodeInMasterI,integPoint);
 				dudenJ = masterElement_->shape_values_grad(nodeInMasterJ,integPoint);
 
-				dudxI = (1/jacobian_det)*(dudenI.first*jMatrix[0] - dudenI.second*jMatrix[2]);
-				dudyI = (1/jacobian_det)*(-1*dudenI.first*jMatrix[1] + dudenI.second*jMatrix[3]);
+				dudxI = (1/jacobian_det)*(dudenI.first*jMatrix[0] + dudenI.second*jMatrix[2]);
+				dudyI = (1/jacobian_det)*(dudenI.first*jMatrix[1] + dudenI.second*jMatrix[3]);
 
-				dudxJ = (1/jacobian_det)*(dudenJ.first*jMatrix[0] - dudenJ.second*jMatrix[2]);
-				dudyJ = (1/jacobian_det)*(-1*dudenJ.first*jMatrix[1] + dudenJ.second*jMatrix[3]);
+				dudxJ = (1/jacobian_det)*(dudenJ.first*jMatrix[0] + dudenJ.second*jMatrix[2]);
+				dudyJ = (1/jacobian_det)*(dudenJ.first*jMatrix[1] + dudenJ.second*jMatrix[3]);
 
-				kIJ += (k*(dudxI*dudxJ - dudyI*dudyJ) + b*uI*uJ)*weights[pointCtr];
+				kIJ += (k*(dudxI*dudxJ + dudyI*dudyJ) + b*uI*uJ)*weights[pointCtr];
 			};
 
-			matrix[nodeI][nodeJ] = kIJ; 
+			matrix[nodeI][nodeJ] += kIJ; 
 
 		};
 	};
