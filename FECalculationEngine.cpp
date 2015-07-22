@@ -223,4 +223,67 @@ void FECalculationEngine2D::calculate_k( unsigned int finiteElement, std::vector
 	};
 };
 
+double FECalculationEngine2D::calculate_k( unsigned int finiteElement, unsigned int nodeI, unsigned int nodeJ ) const
+{
+	using std::vector;
+	using std::pair;
+
+	const vector<unsigned int>& nodesInElement = mesh_->get_nodes_in_element(finiteElement);
+
+	//get integration points
+	const vector<double>& weights = quadInfo_->get_weights();
+	const vector<vector<double>>& integrationPoints = quadInfo_->get_points();
+
+	//integPoint is evaluation point ( ie integration point) 
+	std::pair<double,double> integPoint;
+	
+	//get location of nodes of the element and put in pairs
+	for( unsigned int i = 0; i < nodeLocations.size(); ++i )
+		nodeLocations[i] = mesh_->get_node_location(nodesInElement[i]);
+
+	//set node locations in mapping
+	map_->set_node_locations(nodeLocations);
+
+
+	//variables
+	double uI = 0.0, uJ = 0.0; 
+	pair<double,double> dudenI, dudenJ;
+	double k = 0.0, b = 0.0, jacobian_det = 0.0;
+	double dudxI(0.0), dudyI(0.0), dudxJ(0.0), dudyJ(0.0);
+	double kIJ(0.0);
+
+	const pair<double,double>& nodeLocationI = mesh_->get_node_location(nodeI); 
+	const pair<double,double>& nodeLocationJ = mesh_->get_node_location(nodeJ); 
+
+	unsigned int nodeInMasterI = mesh_->get_node_map_to_master(finiteElement,nodeI);
+	unsigned int nodeInMasterJ = mesh_->get_node_map_to_master(finiteElement,nodeJ);
+
+	for( unsigned int pointCtr = 0; pointCtr < weights.size(); ++pointCtr )
+	{
+		integPoint = std::make_pair(integrationPoints[pointCtr][0],integrationPoints[pointCtr][1]);
+
+		map_->set_point(integrationPoints[pointCtr]);
+		map_->transform_master_to_real(integrationPoints[pointCtr],masterToRealPoint);
+		map_->get_jacobian_matrix(jMatrix,jacobian_det);
+
+		k = data_->k_val(std::make_pair(masterToRealPoint[0],masterToRealPoint[1]));
+		b = data_->b_val(std::make_pair(masterToRealPoint[0],masterToRealPoint[1]));
+
+		uI = masterElement_->shape_value(nodeInMasterI,integPoint);
+		uJ = masterElement_->shape_value(nodeInMasterJ,integPoint);
+		dudenI = masterElement_->shape_values_grad(nodeInMasterI,integPoint);
+		dudenJ = masterElement_->shape_values_grad(nodeInMasterJ,integPoint);
+
+		dudxI = (1/jacobian_det)*(dudenI.first*jMatrix[0] + dudenI.second*jMatrix[2]);
+		dudyI = (1/jacobian_det)*(dudenI.first*jMatrix[1] + dudenI.second*jMatrix[3]);
+
+		dudxJ = (1/jacobian_det)*(dudenJ.first*jMatrix[0] + dudenJ.second*jMatrix[2]);
+		dudyJ = (1/jacobian_det)*(dudenJ.first*jMatrix[1] + dudenJ.second*jMatrix[3]);
+
+		kIJ += (k*(dudxI*dudxJ + dudyI*dudyJ) + b*uI*uJ)*weights[pointCtr];
+	};
+
+	return kIJ;
+};
+
 

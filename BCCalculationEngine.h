@@ -1,5 +1,5 @@
-#ifndef FECALCULATIONENGINE_H_
-#define FECALCULATIONENGINE_H_
+#ifndef BCCALCULATIONENGINE_H_
+#define BCCALCULATIONENGINE_H_
 
 #include <memory>
 
@@ -9,15 +9,16 @@
 #include <Mesh.h>
 #include <Data.h>
 #include <LAContainers.h>
+#include <Data.h>
 
-class FECalculationEngine2D
+class BCCalculationEngine
 {
 public:
-	FECalculationEngine2D(const std::shared_ptr<FiniteElement2D>& masterElement,
+	BCCalculationEngine(const std::shared_ptr<FiniteElement2D>& masterElement,
 		const std::shared_ptr<Mapping>& map, 
 		const std::shared_ptr<Quadrature>& quadInfo,
 		const std::shared_ptr<Mesh2D>& mesh,
-		const std::shared_ptr<Data2D>& data );
+		const std::shared_ptr<Data2D>& data);
 
 	void set_master_element(const std::shared_ptr<FiniteElement2D>& masterElement);
 	void set_mapping(const std::shared_ptr<Mapping>& map);
@@ -29,11 +30,11 @@ public:
 	const std::shared_ptr<Quadrature>& get_quad_info() const;
 	const std::shared_ptr<Mesh2D>& get_mesh() const;
 
-	void calculate_f( unsigned int element, std::vector<double>& values) const;
-	void calculate_k( unsigned int element, std::vector<std::vector<double>>& matrix) const;
+	void apply_natural_bc( LAMatrix* const K, LAVector* const F) const;
+	double calculate_p( unsigned int finiteElement, unsigned int nodeI, unsigned int nodeJ ) const;
+	double calculate_y( unsigned int finiteElement, unsigned int nodeI) const;
 
-	double calculate_f( unsigned int element, unsigned int node) const;
-	double calculate_k( unsigned int element, unsigned int i, unsigned int j ) const;
+	void apply_essential_bc( LAMatrix* const K, LAVector* const F) const;
 
 private:
 	std::shared_ptr<FiniteElement2D> masterElement_;
@@ -42,9 +43,6 @@ private:
 	std::shared_ptr<Mesh2D> mesh_;
 	std::shared_ptr<Data2D> data_;
 
-	void initialize();
-
-	mutable std::vector<double> masterToRealPoint, jMatrix;
 	mutable std::vector<std::pair<double,double>> nodeLocations;
 };
 
