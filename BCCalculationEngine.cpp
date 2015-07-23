@@ -55,7 +55,7 @@ const  std::shared_ptr<Mesh2D>& BCCalculationEngine::get_mesh() const
 
 void BCCalculationEngine::apply_natural_bc( LAMatrix* const K, LAVector* const F) const
 {
-
+	//TODO
 };
 
 double BCCalculationEngine::calculate_y( unsigned int finiteElement, unsigned int nodeI) const
