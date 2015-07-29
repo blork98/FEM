@@ -104,7 +104,7 @@ double FECalculationEngine2D::calculate_f( unsigned int finiteElement, unsigned 
 	return value;
 };
 
-void FECalculationEngine2D::calculate_f( unsigned int finiteElement, std::vector<double>& globalF) const
+void FECalculationEngine2D::calculate_f( unsigned int finiteElement, LAVector& globalF) const
 {
 	using std::vector;
 
@@ -145,13 +145,13 @@ void FECalculationEngine2D::calculate_f( unsigned int finiteElement, std::vector
 
 			u = masterElement_->shape_value(nodeInMaster,integPoint);
 			f = data_->f_val(std::make_pair(masterToRealPoint[0],masterToRealPoint[1])); 
-			globalF[node] += u*f*jacobian_det*weights[pointCtr];
+			globalF(node) += u*f*jacobian_det*weights[pointCtr];
 
 		};
 	};
 };
 //TODO:: change from vector<vector> to different type
-void FECalculationEngine2D::calculate_k( unsigned int finiteElement, std::vector<std::vector<double>>& matrix) const
+void FECalculationEngine2D::calculate_k( unsigned int finiteElement, LAMatrix& matrix) const
 {
 	using std::vector;
 	using std::pair;
@@ -217,7 +217,7 @@ void FECalculationEngine2D::calculate_k( unsigned int finiteElement, std::vector
 				kIJ += (k*(dudxI*dudxJ + dudyI*dudyJ) + b*uI*uJ)*weights[pointCtr];
 			};
 
-			matrix[nodeI][nodeJ] += kIJ; 
+			matrix(nodeI,nodeJ) += kIJ; 
 
 		};
 	};

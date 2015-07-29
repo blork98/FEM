@@ -53,7 +53,7 @@ const  std::shared_ptr<Mesh2D>& BCCalculationEngine::get_mesh() const
 	return mesh_;
 };
 
-void BCCalculationEngine::apply_natural_bc( LAMatrix* const K, LAVector* const F) const
+void BCCalculationEngine::apply_natural_bc( LAMatrix const K, LAVector const F) const
 {
 	//TODO
 };

@@ -21,8 +21,11 @@ public:
     double& operator() ( unsigned int i);
     const double& operator() ( unsigned int i) const;
 
+	size_t size() const;
+
 private:
-    std::unique_ptr<VecImpl> vecImpl;    
+    std::unique_ptr<VecImpl> vecImpl;
+	size_t size_;
 };
 
 class LAMatrix
@@ -39,8 +42,12 @@ public:
 	 double& operator() ( unsigned int i, unsigned int j);
      const double& operator() ( unsigned int i, unsigned int j) const;
 
+	 size_t num_rows() const;
+	 size_t num_cols() const;
+
 private:
 	std::unique_ptr<MatImpl> matImpl;
+	size_t numRows_, numCols_;
 };
 
 #endif

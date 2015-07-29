@@ -83,10 +83,11 @@ const double& UBLASVector::operator() ( unsigned int i) const
 //////////////////////////////// LAVector class
 
 LAVector::LAVector()
-	:vecImpl( std::unique_ptr<VecImpl>() )
+	:vecImpl( std::unique_ptr<VecImpl>() ), size_(0)
 {};
 
 LAVector::LAVector( LAVector::ContainerType type, size_t size)
+	:size_(size)
 {
 	switch(type)
 	{
@@ -103,6 +104,7 @@ LAVector::LAVector( LAVector::ContainerType type, size_t size)
 };
 
 LAVector::LAVector( LAVector::ContainerType type, size_t size, double vals)
+	:size_(size)
 {
 	switch(type)
 	{
@@ -119,6 +121,7 @@ LAVector::LAVector( LAVector::ContainerType type, size_t size, double vals)
 };
 
 LAVector::LAVector( LAVector::ContainerType type, const std::vector<double>& vec)
+	:size_(vec.size())
 {
 	switch(type)
 	{
@@ -136,6 +139,11 @@ LAVector::LAVector( LAVector::ContainerType type, const std::vector<double>& vec
 
 LAVector::~LAVector()
 {};
+
+size_t LAVector::size() const
+{
+	return size_;
+};
 
 double& LAVector::operator() ( unsigned int i)
 {
@@ -232,10 +240,11 @@ const double& UBLASMatrix::operator() (unsigned int i, unsigned int j) const
 //////////////////////////////////////LA Matrix
 
 LAMatrix::LAMatrix()
-	:matImpl(std::unique_ptr<MatImpl>())
+	:matImpl(std::unique_ptr<MatImpl>()), numCols_(0), numRows_(0)
 {};
 
 LAMatrix::LAMatrix( LAMatrix::ContainerType type, size_t numRows, size_t numCols)
+	:numRows_(numRows), numCols_(numCols)
 {
 	switch(type)
 	{
@@ -252,6 +261,7 @@ LAMatrix::LAMatrix( LAMatrix::ContainerType type, size_t numRows, size_t numCols
 };
 
 LAMatrix::LAMatrix(LAMatrix::ContainerType type, size_t numRows, size_t numCols, double vals)
+	:numRows_(numRows), numCols_(numCols)
 {
 	switch(type)
 	{
@@ -288,10 +298,20 @@ LAMatrix::~LAMatrix()
 
 double& LAMatrix::operator() ( unsigned int i, unsigned int j)
 {
-	return (*this)(i,j);
+	return (*matImpl)(i,j);
 };
 
 const double& LAMatrix::operator() ( unsigned int i, unsigned int j) const
 {
-	return (*this)(i,j);
+	return (*matImpl)(i,j);
+};
+
+size_t LAMatrix::num_rows() const
+{
+	return numRows_;
+};
+
+size_t LAMatrix::num_cols() const
+{
+	return numCols_;
 };

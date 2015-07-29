@@ -30,7 +30,7 @@ public:
 	const std::shared_ptr<Quadrature>& get_quad_info() const;
 	const std::shared_ptr<Mesh2D>& get_mesh() const;
 
-	void apply_natural_bc( LAMatrix* const K, LAVector* const F) const;
+	void apply_natural_bc( LAMatrix const K, LAVector const F) const;
 	double calculate_p( unsigned int finiteElement, unsigned int nodeI, unsigned int nodeJ ) const;
 	double calculate_y( unsigned int finiteElement, unsigned int nodeI) const;
 

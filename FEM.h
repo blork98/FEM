@@ -8,6 +8,7 @@
 #include <CartesianMapping.h>
 #include <FECalculationEngine.h>
 #include <LAContainers.h>
+#include <BoundaryCondition.h>
 
 #define NAME "FEM"
 
