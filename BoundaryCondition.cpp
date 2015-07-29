@@ -25,3 +25,24 @@ PointValueBC::const_iterator PointValueBC::end() const
 	return data_.end();
 };
 
+NaturalBC::NaturalBC( 
+	std::vector<std::pair<unsigned int, std::vector<unsigned int>>>& boundaryElements)
+	: boundaryElements_(boundaryElements)
+{};
+
+const std::vector<std::pair<unsigned int, std::vector<unsigned int>>>& 
+	NaturalBC::boundary_elems() const
+{
+	return boundaryElements_;
+};
+
+NaturalBC::elem_iterator NaturalBC::elem_begin() const{
+	return boundaryElements_.cbegin();
+};
+
+NaturalBC::elem_iterator NaturalBC::elem_end() const
+{
+	return boundaryElements_.end();
+};
+
+
