@@ -6,6 +6,12 @@ BilinearTriFE::BilinearTriFE(
 	:FiniteElement2D(3,nodeLocations,nodeEnumerations)
 {};
 
+unsigned int BilinearTriFE::const_dim( unsigned int node1, unsigned int node2 ) const
+{
+	//TODO;
+	return 0;
+};
+
 double BilinearTriFE::shape_value ( const unsigned int& node, 
 	const std::pair<double,double>& point) const
 {

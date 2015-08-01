@@ -9,6 +9,7 @@ public:
 	BilinearTriFE(	const std::vector<std::pair<double,double>>& nodeLocations,
 					const std::vector<unsigned int>& nodeEnumerations);
 
+	unsigned int const_dim( unsigned int node1, unsigned int node2 ) const;
 	virtual double shape_value ( const unsigned int& node, 
 		const std::pair<double,double>& point) const;
 	virtual std::pair<double,double> shape_values_grad(const unsigned int& node, 

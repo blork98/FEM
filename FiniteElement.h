@@ -18,6 +18,9 @@ public:
 	const std::vector<unsigned int>& node_enums() const;
 	const std::vector<std::pair<double,double>>& node_locations() const;
 
+	//Given two points returns dimnension where both points have same coordinates
+	virtual unsigned int const_dim( unsigned int node1, unsigned int node2 ) const = 0;
+
 	//Shape Function Values
 	virtual double shape_value ( const unsigned int& node, 
 		const std::pair<double,double>& point) const = 0;

@@ -8,6 +8,40 @@ BilinearQuadFE::BilinearQuadFE(	const vector<pair<double,double>>& nodeLocations
 	:FiniteElement2D(4,nodeLocations,nodeEnumerations)
 {};
 
+BilinearQuadFE::~BilinearQuadFE()
+{};
+
+unsigned int BilinearQuadFE::const_dim( unsigned int node1, unsigned int node2 ) const
+{
+	unsigned int result = 0;
+
+	unsigned int nodeLarger = 0, nodeSmaller = 0;
+
+	if( node1 > node2 )
+	{
+		nodeLarger = node1;
+		nodeSmaller = node2;
+	} else {
+		nodeLarger = node2;
+		nodeSmaller = node1;
+	};
+
+	if( nodeSmaller == 0 && nodeLarger == 1 ) 
+	{
+		result = 0;
+	} else if ( nodeSmaller == 1 && nodeLarger == 2 ) {
+		result = 1;
+	} else if ( nodeSmaller == 2 && nodeLarger == 3 ) {
+		result = 0;
+	} else if ( nodeSmaller == 0 && nodeLarger == 3 ) {
+		result = 1;
+	} else {
+		return 2; //invalid
+	}
+
+	return result;
+};
+
 //TODO calculate normalizer
 double BilinearQuadFE::shape_value ( const unsigned int& node, 
 		const pair<double,double>& point) const
