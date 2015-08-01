@@ -6,7 +6,7 @@ BilinearTriFE::BilinearTriFE(
 	:FiniteElement2D(3,nodeLocations,nodeEnumerations)
 {};
 
-unsigned int BilinearTriFE::const_dim( unsigned int node1, unsigned int node2 ) const
+unsigned int BilinearTriFE::const_dim( const std::vector<unsigned int>& nodes) const
 {
 	//TODO;
 	return 0;

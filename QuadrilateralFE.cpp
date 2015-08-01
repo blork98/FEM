@@ -11,10 +11,11 @@ BilinearQuadFE::BilinearQuadFE(	const vector<pair<double,double>>& nodeLocations
 BilinearQuadFE::~BilinearQuadFE()
 {};
 
-unsigned int BilinearQuadFE::const_dim( unsigned int node1, unsigned int node2 ) const
+unsigned int BilinearQuadFE::const_dim( const std::vector<unsigned int>& nodes) const
 {
 	unsigned int result = 0;
 
+	unsigned int node1 = nodes[0], node2 = nodes[1];
 	unsigned int nodeLarger = 0, nodeSmaller = 0;
 
 	if( node1 > node2 )
