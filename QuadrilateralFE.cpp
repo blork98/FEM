@@ -27,15 +27,14 @@ unsigned int BilinearQuadFE::const_dim( const std::vector<unsigned int>& nodes) 
 		nodeSmaller = node1;
 	};
 
-	if( nodeSmaller == 0 && nodeLarger == 1 ) 
-	{
-		result = 0;
+	if( nodeSmaller == 0 && nodeLarger == 1 ) {
+		result = 1;
 	} else if ( nodeSmaller == 1 && nodeLarger == 2 ) {
-		result = 1;
-	} else if ( nodeSmaller == 2 && nodeLarger == 3 ) {
 		result = 0;
-	} else if ( nodeSmaller == 0 && nodeLarger == 3 ) {
+	} else if ( nodeSmaller == 2 && nodeLarger == 3 ) {
 		result = 1;
+	} else if ( nodeSmaller == 0 && nodeLarger == 3 ) {
+		result = 0;
 	} else {
 		return 2; //invalid
 	}

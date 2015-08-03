@@ -98,7 +98,6 @@ double FECalculationEngine2D::calculate_f( unsigned int finiteElement, unsigned 
 		u = masterElement_->shape_value(nodeInMaster,integPoint);
 		f = data_->f_val(std::make_pair(masterToRealPoint[0],masterToRealPoint[1])); 
 		value += u*f*jacobian_det*weights[pointCtr];
-
 	};
 
 	return value;

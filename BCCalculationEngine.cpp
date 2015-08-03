@@ -1,13 +1,21 @@
 #include <BCCalculationEngine.h>
 
+#include <boost/bind.hpp>
+#include <functional>
+#include <cmath>
+
 BCCalculationEngine::BCCalculationEngine(
 	const std::shared_ptr<FiniteElement2D>& masterElement,
 	const std::shared_ptr<Mapping>& map, 
 	const std::shared_ptr<Quadrature>& quadInfo,
 	const std::shared_ptr<Mesh2D>& mesh,
-		const std::shared_ptr<Data2D>& data)
+	const std::shared_ptr<PointValueBC>& pbc,
+	const std::shared_ptr<NaturalBC>& nbc)
 	:masterElement_(masterElement), map_(map), 
-	quadInfo_(quadInfo), mesh_(mesh), data_(data),
+	quadInfo_(quadInfo), mesh_(mesh), 
+	pbc_(pbc), nbc_(nbc), 
+	intPoint(map->dim(),0.0), masterToRealPoint(map->dim(),0.0),
+	jMatrix(map->dim()*map->dim(),0.0),
 	nodeLocations( masterElement->num_nodes(), std::make_pair(0.0,0.0))
 {
 	map_->set_node_locations_master(masterElement_->node_locations());
@@ -53,12 +61,42 @@ const  std::shared_ptr<Mesh2D>& BCCalculationEngine::get_mesh() const
 	return mesh_;
 };
 
-void BCCalculationEngine::apply_natural_bc( LAMatrix const K, LAVector const F) const
+void BCCalculationEngine::apply_essential_bc( LAMatrix& K, LAVector& F) const
 {
-	//TODO
+	auto pbcIt = pbc_->begin();
+	unsigned int nodeLoc = 0;
+	double val = 0.0;
+
+	for(; pbcIt != pbc_->end(); ++pbcIt)
+	{
+		nodeLoc = pbcIt->first;
+		val = pbcIt->second;
+		F(nodeLoc) += val;
+	};
 };
 
-double BCCalculationEngine::calculate_y( unsigned int finiteElement, unsigned int nodeI) const
+void BCCalculationEngine::apply_natural_bc( LAMatrix& K, LAVector& F) const
+{
+	//For p calculations
+	std::pair<unsigned int, double> dimInfo = std::make_pair(0,0.0);
+	std::pair<double,double> nodeLocation = std::make_pair(0.0,0.0);
+
+	for( auto elemCtr = nbc_->elem_begin(); elemCtr != nbc_->elem_end(); ++elemCtr )
+	{	
+		const std::vector<unsigned int>& boundaryNodes = elemCtr->second;
+		nodeLocation = mesh_->get_node_location(boundaryNodes[0]);
+		dimInfo.first = masterElement_->const_dim(boundaryNodes);
+		dimInfo.second = dimInfo.first == 0 ? nodeLocation.first : nodeLocation.second;
+
+		for( auto node : boundaryNodes )
+		{
+			F(node) += calculate_y(elemCtr->first,node,dimInfo);
+		};
+	};
+};
+
+double BCCalculationEngine::calculate_y( unsigned int finiteElement, 
+	unsigned int nodeI, const std::pair<unsigned int,double>& dimInfo) const
 {
 	double value = 0.0;
 
@@ -69,7 +107,7 @@ double BCCalculationEngine::calculate_y( unsigned int finiteElement, unsigned in
 	const vector<double>& weights = quadInfo_->get_weights();
 	const vector<vector<double>>& integrationPoints = quadInfo_->get_points();
 
-	double y = 0.0,jacobian_det = 0.0;
+	double y = 0.0, jacobian_det = 0.0, u = 0.0, p = 0.0;
 
 	//integPoint is evaluation point ( ie integration point) 
 	std::pair<double,double> integPoint;
@@ -86,9 +124,32 @@ double BCCalculationEngine::calculate_y( unsigned int finiteElement, unsigned in
 
 	for( unsigned int pointCtr = 0; pointCtr < weights.size(); ++pointCtr )
 	{
-		integPoint = std::make_pair(integrationPoints[pointCtr][0],integrationPoints[pointCtr][1]);
+		//constant e
+		if( dimInfo.first == 0 ) {
+			integPoint = std::make_pair(dimInfo.second,integrationPoints[pointCtr][1]);
+			intPoint[0] = dimInfo.second;
+			intPoint[1] = integrationPoints[pointCtr][1];
 
+			map_->set_point(intPoint);
+			map_->transform_master_to_real(intPoint,masterToRealPoint);
+			map_->get_jacobian_matrix(jMatrix,jacobian_det);
 
+			jacobian_det = std::sqrt((1/jMatrix[2])*(1/jMatrix[2]) + (1/jMatrix[3])*(1/jMatrix[3]));
+		} else { //constant n
+			integPoint = std::make_pair(integrationPoints[pointCtr][0],dimInfo.second);
+			intPoint[0] = integrationPoints[pointCtr][0];
+			intPoint[1] = dimInfo.second;
+
+			map_->set_point(intPoint);
+			map_->transform_master_to_real(intPoint,masterToRealPoint);
+			map_->get_jacobian_matrix(jMatrix,jacobian_det);
+
+			jacobian_det = std::sqrt((1/jMatrix[0])*(1/jMatrix[0]) + (1/jMatrix[1])*(1/jMatrix[1]));
+		};
+
+		p = nbc_->p(masterToRealPoint[0],masterToRealPoint[1]);
+		u = masterElement_->shape_value(nodeInMaster,integPoint);
+		value += jacobian_det*u*p*weights[pointCtr];
 	};
 
 	return value;

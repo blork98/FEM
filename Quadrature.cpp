@@ -62,6 +62,12 @@ void Quadrature::initialize_quad_info(const QuadratureGenerator& quadGen)
 				points_[xPoint + yPoint*pointsPerDim_][1] = points[yPoint]; 
 			}
 		}
+	} else if( numDims_ == 1 ) {
+		for( unsigned int xPoint = 0; xPoint < pointsPerDim_; ++ xPoint )
+		{
+			weights_[xPoint] = weights[xPoint];
+			points_[xPoint][0] = points[xPoint];
+		}
 	} else if( numDims_ == 3 ) {
 		//TODO
 	};
