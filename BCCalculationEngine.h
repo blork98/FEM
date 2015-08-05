@@ -34,11 +34,6 @@ public:
 	void apply_natural_bc( LAMatrix& K, LAVector& F) const;
 	void apply_essential_bc( LAMatrix& K, LAVector& F) const;
 
-	double calculate_p( unsigned int finiteElement, unsigned int nodeI, 
-		unsigned int nodeJ, const std::pair<unsigned int,double>& dimInfo ) const;
-	double calculate_y( unsigned int finiteElement, unsigned int nodeI, 
-		const std::pair<unsigned int,double>& dimInfo) const;
-
 private:
 	std::shared_ptr<FiniteElement2D> masterElement_;
 	std::shared_ptr<Mapping> map_;
@@ -50,6 +45,10 @@ private:
 	mutable std::vector<std::pair<double,double>> nodeLocations;
 	mutable std::vector<double> intPoint, masterToRealPoint, jMatrix;
 
+	double calculate_p( unsigned int finiteElement, unsigned int nodeI, 
+		unsigned int nodeJ, const std::pair<unsigned int,double>& dimInfo ) const;
+	double calculate_y( unsigned int finiteElement, unsigned int nodeI, 
+		const std::pair<unsigned int,double>& dimInfo) const;
 };
 
 #endif

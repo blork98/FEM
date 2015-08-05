@@ -43,6 +43,20 @@ private:
     std::vector<std::pair<unsigned int, std::vector<unsigned int>>> boundaryElements_;
 };
 
+class EssentialBC
+{
+public:
+	EssentialBC( const std::vector<unsigned int>& nodes,
+		const std::vector<double>& vals);
+
+	typedef std::vector<std::pair<unsigned int,double>>::const_iterator const_iterator;
+
+	const_iterator begin() const;
+	const_iterator end() const;
+private:
+	std::vector<std::pair<unsigned int,double>> data_;
+};
+
 class ConstantNaturalBC : public NaturalBC
 {
 public:

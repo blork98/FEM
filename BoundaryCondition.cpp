@@ -84,4 +84,25 @@ double ConstantNaturalBC::y(double x, double y) const
 	return y_;
 };
 
+EssentialBC::EssentialBC( 
+	const std::vector<unsigned int>& nodes,
+	const std::vector<double>& vals)
+	: data_(nodes.size())
+{
+	for( unsigned int i = 0; i < nodes.size(); ++i)
+		data_[i] = std::make_pair(nodes[i],vals[i]);
+};
+
+EssentialBC::const_iterator EssentialBC::begin() const
+{
+	return data_.cbegin();
+};
+
+EssentialBC::const_iterator EssentialBC::end() const
+{
+	return data_.end();
+};
+
+
+
 
