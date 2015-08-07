@@ -13,6 +13,7 @@ public:
     enum ContainerType { STDVEC, BOOSTUBLAS };
 
 	LAVector();
+	LAVector( const LAVector& vec);
     LAVector( LAVector::ContainerType type, size_t size);
     LAVector( LAVector::ContainerType type, size_t size, double vals);
     LAVector( LAVector::ContainerType type, const std::vector<double>& vec);
@@ -22,10 +23,12 @@ public:
     const double& operator() ( unsigned int i) const;
 
 	size_t size() const;
+	ContainerType container_type() const;
 
 private:
     std::unique_ptr<VecImpl> vecImpl;
 	size_t size_;
+	ContainerType contType;
 };
 
 class LAMatrix
@@ -48,6 +51,13 @@ public:
 private:
 	std::unique_ptr<MatImpl> matImpl;
 	size_t numRows_, numCols_;
+};
+
+class SparseMatrix
+{
+public:
+
+private:
 };
 
 #endif

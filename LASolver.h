@@ -9,7 +9,7 @@
 class LinearSolver 
 {
 public:
-	virtual void solve() = 0;
+	virtual void solve( LAVector& sol ) = 0;
 };
 
 class BoostLUSolver : public LinearSolver

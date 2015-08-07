@@ -86,8 +86,28 @@ LAVector::LAVector()
 	:vecImpl( std::unique_ptr<VecImpl>() ), size_(0)
 {};
 
+LAVector::LAVector( const LAVector& vec)
+	:size_(vec.size()), contType(vec.container_type())
+{
+	switch(contType)
+	{
+		case STDVEC:
+			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
+			break;
+		case BOOSTUBLAS:
+			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
+			break;
+		default:
+			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
+			break;
+	};
+
+	for( size_t i = 0; i < size_; ++i )
+		(*vecImpl)(i) = vec(i);
+};
+
 LAVector::LAVector( LAVector::ContainerType type, size_t size)
-	:size_(size)
+	:size_(size), contType(type)
 {
 	switch(type)
 	{
@@ -104,7 +124,7 @@ LAVector::LAVector( LAVector::ContainerType type, size_t size)
 };
 
 LAVector::LAVector( LAVector::ContainerType type, size_t size, double vals)
-	:size_(size)
+	:size_(size), contType(type)
 {
 	switch(type)
 	{
@@ -121,7 +141,7 @@ LAVector::LAVector( LAVector::ContainerType type, size_t size, double vals)
 };
 
 LAVector::LAVector( LAVector::ContainerType type, const std::vector<double>& vec)
-	:size_(vec.size())
+	:size_(vec.size()), contType(type)
 {
 	switch(type)
 	{
@@ -139,6 +159,11 @@ LAVector::LAVector( LAVector::ContainerType type, const std::vector<double>& vec
 
 LAVector::~LAVector()
 {};
+
+LAVector::ContainerType LAVector::container_type() const
+{
+	return contType;
+};
 
 size_t LAVector::size() const
 {
