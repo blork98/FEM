@@ -37,6 +37,8 @@ LAVector operator*( double scalar, const LAVector& vec)
 	{
 		result(i) = scalar*vec(i);
 	};
+
+	return result;
 };
 
 LAVector operator+( const LAVector& vec1,  const LAVector& vec2)
@@ -107,4 +109,13 @@ void vector_subtract(const LAVector& vec1, const LAVector& vec2, LAVector& resul
 
 	for( size_t i = 0; i < vec1.size(); ++i )
 		result(i) = vec1(i) - vec2(i);
+};
+
+void vector_scalar_mult(double scalar, const LAVector& vec1, LAVector& result)
+{
+	if( result.size() != vec1.size() )
+		throw;
+
+	for( size_t i = 0; i < vec1.size(); ++i )
+		result(i) = scalar*vec1(i);
 };

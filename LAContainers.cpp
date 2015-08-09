@@ -170,6 +170,33 @@ size_t LAVector::size() const
 	return size_;
 };
 
+LAVector&  LAVector::operator= (const LAVector& rhs)
+{
+	if( this->size() != rhs.size() )
+	{
+		size_ = rhs.size();
+		vecImpl.reset();
+
+		switch(contType)
+		{
+			case STDVEC:
+				vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
+				break;
+			case BOOSTUBLAS:
+				vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
+				break;
+			default:
+				vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
+				break;
+		};
+	};
+
+	for( size_t i = 0; i < rhs.size(); ++i )
+		(*vecImpl)(i) = rhs(i);
+
+	return (*this);
+};
+
 double& LAVector::operator() ( unsigned int i)
 {
 	return (*vecImpl)(i);

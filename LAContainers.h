@@ -19,6 +19,7 @@ public:
     LAVector( LAVector::ContainerType type, const std::vector<double>& vec);
 	~LAVector();
     
+	LAVector& operator= (const LAVector& rhs);
     double& operator() ( unsigned int i);
     const double& operator() ( unsigned int i) const;
 
