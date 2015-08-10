@@ -119,3 +119,21 @@ void vector_scalar_mult(double scalar, const LAVector& vec1, LAVector& result)
 	for( size_t i = 0; i < vec1.size(); ++i )
 		result(i) = scalar*vec1(i);
 };
+
+void vector_axpy(double scalar, const LAVector& vecMult, const LAVector& vecPlus, LAVector& result )
+{
+	if( result.size() != vecMult.size() )
+		throw;
+
+	for( size_t i = 0; i < vecMult.size(); ++i )
+		result(i) = scalar*vecMult(i) + vecPlus(i);
+};
+
+void vector_axmy(double scalar, const LAVector& vecMult, const LAVector& vecMinus, LAVector& result )
+{
+	if( result.size() != vecMult.size() )
+		throw;
+
+	for( size_t i = 0; i < vecMult.size(); ++i )
+		result(i) = scalar*vecMult(i) - vecMinus(i);
+};

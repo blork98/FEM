@@ -42,13 +42,24 @@ void CGSolver::apply_preconditioner() const
 	if(usePreconditioner_) {
 
 	} else {
-
+		z_prev = r_prev;
 	};
 };
 
 void CGSolver::solve( LAVector& sol ) const
 {
-	//calculate residual
+	//local vars
+	LAVector *rPrev, *rCurr, *pCurr, *pPrev, *solPrev, *solCurr;
+	rPrev = &r_prev;
+	rCurr = &r_curr;
+	pCurr = &p_curr;
+	pPrev = &p_prev;
+
+	sol_prev = sol;
+	solPrev = &sol_prev;
+	solCurr = &sol;
+
+	//calculate initial residual
 	mat_vector_product(*A_,sol,r_prev);
 	vector_subtract(*b_,r_prev,r_prev);
 
@@ -58,19 +69,34 @@ void CGSolver::solve( LAVector& sol ) const
 		//solve for z using precondition if enabled
 		apply_preconditioner();
 
-		rho_prev = vector_dot_product(r_prev, z_prev);
+		rho_prev = vector_dot_product(*rPrev, z_prev);
 
 		if( iter != 1 ) {
 			beta_prev = rho_prev/rho_prev2;
-			vector_scalar_mult(beta_prev, p_prev, p_curr);
-			vector_add(z_prev, p_curr, p_curr);
+			vector_axpy(beta_prev, *pPrev, z_prev, *pCurr);	
 		} else {
-			p_curr = z_prev;
+			*pCurr = z_prev;
 		};
 
 		mat_vector_product(*A_,p_curr,q_curr);
 		alpha_curr = rho_prev/vector_dot_product(p_curr,q_curr);
 
+		vector_axpy(alpha_curr, p_curr, *solPrev, *solCurr );
+		vector_axmy(alpha_curr, q_curr, *rPrev, *rCurr);
+
+		//check for convergence
+		if( control_->convergence_achieved(*rCurr) ) {
+			if( (iter % 2) == 0)
+				sol = sol_prev;
+
+			break;
+		};
+
+		//update prev variables
+		rho_prev2 = rho_prev;
+		std::swap(rPrev,rCurr);
+		std::swap(pPrev,pCurr);
+		std::swap(solPrev, solCurr);
 	};
 
 };

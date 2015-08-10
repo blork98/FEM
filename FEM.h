@@ -10,6 +10,8 @@
 #include <LAContainers.h>
 #include <BoundaryCondition.h>
 #include <BCCalculationEngine.h>
+#include <LAOperations.h>
+#include <CGSolver.h>
 
 #define NAME "FEM"
 

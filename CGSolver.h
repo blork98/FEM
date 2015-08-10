@@ -25,7 +25,7 @@ private:
 	std::shared_ptr<LAVector> b_;
 	unsigned int maxIterations_;
 	mutable LAVector r_prev, r_curr, z_prev, z_curr, p_curr, p_prev, q_curr, sol_prev;
-	mutable double alpha_prev, alpha_curr, rho_curr, rho_prev, rho_prev2,beta_prev;
+	mutable double alpha_prev, alpha_curr, rho_curr, rho_prev, rho_prev2, beta_prev;
 	bool usePreconditioner_;
 };
 
