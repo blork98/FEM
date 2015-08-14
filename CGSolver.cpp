@@ -12,7 +12,7 @@ bool ControlParameters::convergence_achieved( const LAVector& sol ) const
 {
 	double value = 0.0;
 
-	for( unsigned int i = 9; i < sol.size(); ++i )
+	for( unsigned int i = 0; i < sol.size(); ++i )
 		value += sol(i)*sol(i);
 
 	value = std::sqrt(value);
@@ -36,17 +36,17 @@ CGSolver::CGSolver( unsigned int maxIterations, std::shared_ptr<ControlParameter
 	usePreconditioner_(false)
 {};
 
-void CGSolver::apply_preconditioner() const
+void CGSolver::apply_preconditioner(LAVector* rPrev) const
 {
 	//TODO
 	if(usePreconditioner_) {
 
 	} else {
-		z_prev = r_prev;
+		z_prev = *rPrev;
 	};
 };
 
-void CGSolver::solve( LAVector& sol ) const
+void CGSolver::solve( LAVector& sol ) 
 {
 	//local vars
 	LAVector *rPrev, *rCurr, *pCurr, *pPrev, *solPrev, *solCurr;
@@ -64,10 +64,10 @@ void CGSolver::solve( LAVector& sol ) const
 	vector_subtract(*b_,r_prev,r_prev);
 
 	//main iteration
-	for( unsigned int iter = 0; iter <= maxIterations_; ++iter )
+	for( unsigned int iter = 1; iter <= maxIterations_; ++iter )
 	{
 		//solve for z using precondition if enabled
-		apply_preconditioner();
+		apply_preconditioner(rPrev);//error here
 
 		rho_prev = vector_dot_product(*rPrev, z_prev);
 
@@ -78,10 +78,10 @@ void CGSolver::solve( LAVector& sol ) const
 			*pCurr = z_prev;
 		};
 
-		mat_vector_product(*A_,p_curr,q_curr);
-		alpha_curr = rho_prev/vector_dot_product(p_curr,q_curr);
+		mat_vector_product(*A_,*pCurr,q_curr);
+		alpha_curr = rho_prev/vector_dot_product(*pCurr,q_curr);
 
-		vector_axpy(alpha_curr, p_curr, *solPrev, *solCurr );
+		vector_axpy(alpha_curr, *pCurr, *solPrev, *solCurr );
 		vector_axmy(alpha_curr, q_curr, *rPrev, *rCurr);
 
 		//check for convergence

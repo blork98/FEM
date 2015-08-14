@@ -17,8 +17,8 @@ class CGSolver : public LinearSolver
 public:
 	CGSolver( unsigned int maxIterations, std::shared_ptr<ControlParameters>& control,
 		const std::shared_ptr<LAMatrix>& A, const std::shared_ptr<LAVector>& b);
-	void solve( LAVector& sol ) const;
-	void apply_preconditioner() const;
+	void solve( LAVector& sol );
+	void apply_preconditioner(LAVector* rPrev) const;
 private:
 	std::shared_ptr<ControlParameters> control_;
 	std::shared_ptr<LAMatrix> A_;
