@@ -82,7 +82,7 @@ void CGSolver::solve( LAVector& sol )
 		alpha_curr = rho_prev/vector_dot_product(*pCurr,q_curr);
 
 		vector_axpy(alpha_curr, *pCurr, *solPrev, *solCurr );
-		vector_axmy(alpha_curr, q_curr, *rPrev, *rCurr);
+		vector_xmay(alpha_curr, q_curr, *rPrev, *rCurr);
 
 		//check for convergence
 		if( control_->convergence_achieved(*rCurr) ) {

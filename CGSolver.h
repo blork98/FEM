@@ -19,6 +19,7 @@ public:
 		const std::shared_ptr<LAMatrix>& A, const std::shared_ptr<LAVector>& b);
 	void solve( LAVector& sol );
 	void apply_preconditioner(LAVector* rPrev) const;
+	
 private:
 	std::shared_ptr<ControlParameters> control_;
 	std::shared_ptr<LAMatrix> A_;

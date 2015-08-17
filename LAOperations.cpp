@@ -87,6 +87,7 @@ void mat_vector_product(const LAMatrix& mat, const LAVector& vec, LAVector& resu
 
 	for( size_t vecElem = 0; vecElem < vec.size(); ++vecElem )
 	{
+		result(vecElem) = 0.0;
 		for( size_t matCols = 0; matCols < mat.num_cols(); ++matCols )
 			result(vecElem) += vec(matCols)*mat(vecElem,matCols);
 	};
@@ -136,4 +137,13 @@ void vector_axmy(double scalar, const LAVector& vecMult, const LAVector& vecMinu
 
 	for( size_t i = 0; i < vecMult.size(); ++i )
 		result(i) = scalar*vecMult(i) - vecMinus(i);
+};
+
+void vector_xmay(double scalar, const LAVector& vecMult, const LAVector& vecMinus, LAVector& result)
+{
+	if( result.size() != vecMult.size() )
+		throw;
+
+	for( size_t i = 0; i < vecMult.size(); ++i )
+		result(i) = vecMinus(i) - scalar*vecMult(i);
 };
