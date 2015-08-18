@@ -54,11 +54,4 @@ private:
 	size_t numRows_, numCols_;
 };
 
-class SparseMatrix
-{
-public:
-
-private:
-};
-
 #endif

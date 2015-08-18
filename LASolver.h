@@ -10,6 +10,8 @@ class LinearSolver
 {
 public:
 	virtual void solve( LAVector& sol ) = 0;
+	virtual void set_A(const std::shared_ptr<LAMatrix>& A) = 0;
+	virtual void set_b(const std::shared_ptr<LAVector>& b) = 0;
 };
 
 class BoostLUSolver : public LinearSolver
@@ -18,8 +20,8 @@ public:
 	BoostLUSolver( const LAVector& rhs, const LAMatrix& A);
 
 	void solve( LAVector& sol);
-	void set_rhs( const LAVector& rhs);
-	void set_linear_system( const LAMatrix& A);
+	virtual void set_A(const std::shared_ptr<LAMatrix>& A);
+	virtual void set_b(const std::shared_ptr<LAVector>& b);
 
 private:
 	void factorize();

@@ -30,14 +30,14 @@ void BoostLUSolver::matrix_to_ublasmat( const LAMatrix& A)
 	};
 };
 
-void BoostLUSolver::set_rhs( const LAVector& rhs)
+void BoostLUSolver::set_b(const std::shared_ptr<LAVector>& b)
 {
-	vector_to_ublasvec(rhs);
+	vector_to_ublasvec(*b);
 };
 
-void BoostLUSolver::set_linear_system( const LAMatrix& A)
+void BoostLUSolver::set_A(const std::shared_ptr<LAMatrix>& A)
 {
-	matrix_to_ublasmat(A);
+	matrix_to_ublasmat(*A);
 	factorize();
 };
 

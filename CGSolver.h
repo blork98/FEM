@@ -8,6 +8,7 @@ class ControlParameters
 public:
 	ControlParameters(double tolerance);
 	virtual bool convergence_achieved( const LAVector& sol ) const;
+
 private:
 	double tolerance_;
 };

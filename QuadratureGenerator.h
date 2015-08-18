@@ -3,7 +3,6 @@
 
 #include <map>
 #include <vector>
-#include <ql/patterns/singleton.hpp>
 
 class QuadratureGenerator //: public QuantLib::Singleton<QuadratureGenerator>
 {
