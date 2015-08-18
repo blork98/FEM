@@ -5,7 +5,6 @@ Preconditioner::Preconditioner(const std::shared_ptr<LAVector>& b, const std::sh
 		:b_(b), solver_(solver), M_(nullptr)
 {
 	M_ = std::make_shared<LAMatrix>(LAMatrix::STDMAT, A->num_rows(), A->num_cols());
-	create_precondioner(A);
 };
 
 void Preconditioner::solve( LAVector& sol)
@@ -19,7 +18,9 @@ void Preconditioner::solve( LAVector& sol)
 JacobiPC::JacobiPC(const std::shared_ptr<LAVector>& b, const std::shared_ptr<LAMatrix>& A,
 		const std::shared_ptr<LinearSolver>& solver)
 		:Preconditioner(b,A,solver)
-{};
+{
+    create_precondioner(A);    
+};
 
 void JacobiPC::create_precondioner(const std::shared_ptr<LAMatrix>& A)
 {
