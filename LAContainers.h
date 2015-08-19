@@ -41,6 +41,7 @@ public:
 	 LAMatrix( LAMatrix::ContainerType type, size_t numRows, size_t numCols);
 	 LAMatrix(LAMatrix::ContainerType type, size_t numRows, size_t numCols, double vals);
 	 LAMatrix(LAMatrix::ContainerType type, const std::vector<std::vector<double>>& mat);
+	 LAMatrix( const LAMatrix& vec);
 	 ~LAMatrix();
 
 	 double& operator() ( unsigned int i, unsigned int j);
@@ -48,10 +49,12 @@ public:
 
 	 size_t num_rows() const;
 	 size_t num_cols() const;
+	 ContainerType container_type() const;
 
 private:
 	std::unique_ptr<MatImpl> matImpl;
 	size_t numRows_, numCols_;
+	ContainerType contType;
 };
 
 #endif

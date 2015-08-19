@@ -95,7 +95,7 @@ LAVector::LAVector( const LAVector& vec)
 			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
 			break;
 		case BOOSTUBLAS:
-			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
+			vecImpl = std::unique_ptr<VecImpl>(new UBLASVector(size_));
 			break;
 		default:
 			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
@@ -115,7 +115,7 @@ LAVector::LAVector( LAVector::ContainerType type, size_t size)
 			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size));
 			break;
 		case BOOSTUBLAS:
-			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size));
+			vecImpl = std::unique_ptr<VecImpl>(new UBLASVector(size));
 			break;
 		default:
 			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size));
@@ -132,7 +132,7 @@ LAVector::LAVector( LAVector::ContainerType type, size_t size, double vals)
 			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size,vals));
 			break;
 		case BOOSTUBLAS:
-			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size,vals));
+			vecImpl = std::unique_ptr<VecImpl>(new UBLASVector(size,vals));
 			break;
 		default:
 			vecImpl = std::unique_ptr<VecImpl>(new STDVector(size,vals));
@@ -149,7 +149,7 @@ LAVector::LAVector( LAVector::ContainerType type, const std::vector<double>& vec
 			vecImpl = std::unique_ptr<VecImpl>(new STDVector(vec));
 			break;
 		case BOOSTUBLAS:
-			vecImpl = std::unique_ptr<VecImpl>(new STDVector(vec));
+			vecImpl = std::unique_ptr<VecImpl>(new UBLASVector(vec));
 			break;
 		default:
 			vecImpl = std::unique_ptr<VecImpl>(new STDVector(vec));
@@ -172,27 +172,31 @@ size_t LAVector::size() const
 
 LAVector&  LAVector::operator= (const LAVector& rhs)
 {
-	if( this->size() != rhs.size() )
+	if( this != &rhs ) 
 	{
-		size_ = rhs.size();
-		vecImpl.reset();
-
-		switch(contType)
+		if( this->size() != rhs.size() )
 		{
-			case STDVEC:
-				vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
-				break;
-			case BOOSTUBLAS:
-				vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
-				break;
-			default:
-				vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
-				break;
-		};
-	};
+			size_ = rhs.size();
+			vecImpl.reset();
 
-	for( size_t i = 0; i < rhs.size(); ++i )
-		(*vecImpl)(i) = rhs(i);
+			switch(contType)
+			{
+				case STDVEC:
+					vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
+					break;
+				case BOOSTUBLAS:
+					vecImpl = std::unique_ptr<VecImpl>(new UBLASVector(size_));
+					break;
+				default:
+					vecImpl = std::unique_ptr<VecImpl>(new STDVector(size_));
+					break;
+			};
+		};
+
+		for( size_t i = 0; i < rhs.size(); ++i )
+			(*vecImpl)(i) = rhs(i);
+
+	};
 
 	return (*this);
 };
@@ -292,11 +296,33 @@ const double& UBLASMatrix::operator() (unsigned int i, unsigned int j) const
 //////////////////////////////////////LA Matrix
 
 LAMatrix::LAMatrix()
-	:matImpl(std::unique_ptr<MatImpl>()), numCols_(0), numRows_(0)
+	:matImpl(std::unique_ptr<MatImpl>()), contType(LAMatrix::STDMAT),
+	numCols_(0), numRows_(0)
 {};
 
+LAMatrix::LAMatrix( const LAMatrix& mat)
+	:contType(mat.container_type() ), numRows_(mat.num_rows()), numCols_(mat.num_cols())
+{
+	switch(contType)
+	{
+		case STDMAT:
+			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(numRows_,numCols_));
+			break;
+		case BOOSTUBLAS:
+			matImpl = std::unique_ptr<MatImpl>(new UBLASMatrix(numRows_,numCols_));
+			break;
+		default:
+			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(numRows_,numCols_));
+			break;
+	};
+
+	for( unsigned int i = 0; i < numRows_; ++i )
+		for( unsigned int j = 0; j < numCols_; ++j)
+			(*matImpl)(i,j) = mat(i,j);
+};
+
 LAMatrix::LAMatrix( LAMatrix::ContainerType type, size_t numRows, size_t numCols)
-	:numRows_(numRows), numCols_(numCols)
+	:numRows_(numRows), numCols_(numCols), contType(type)
 {
 	switch(type)
 	{
@@ -304,7 +330,7 @@ LAMatrix::LAMatrix( LAMatrix::ContainerType type, size_t numRows, size_t numCols
 			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(numRows,numCols));
 			break;
 		case BOOSTUBLAS:
-			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(numRows,numCols));
+			matImpl = std::unique_ptr<MatImpl>(new UBLASMatrix(numRows,numCols));
 			break;
 		default:
 			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(numRows,numCols));
@@ -313,7 +339,7 @@ LAMatrix::LAMatrix( LAMatrix::ContainerType type, size_t numRows, size_t numCols
 };
 
 LAMatrix::LAMatrix(LAMatrix::ContainerType type, size_t numRows, size_t numCols, double vals)
-	:numRows_(numRows), numCols_(numCols)
+	:numRows_(numRows), numCols_(numCols), contType(type)
 {
 	switch(type)
 	{
@@ -321,7 +347,7 @@ LAMatrix::LAMatrix(LAMatrix::ContainerType type, size_t numRows, size_t numCols,
 			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(numRows,numCols,vals));
 			break;
 		case BOOSTUBLAS:
-			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(numRows,numCols,vals));
+			matImpl = std::unique_ptr<MatImpl>(new UBLASMatrix(numRows,numCols,vals));
 			break;
 		default:
 			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(numRows,numCols,vals));
@@ -330,6 +356,7 @@ LAMatrix::LAMatrix(LAMatrix::ContainerType type, size_t numRows, size_t numCols,
 };
 
 LAMatrix::LAMatrix(LAMatrix::ContainerType type, const std::vector<std::vector<double>>& mat)
+	: contType(type), numRows_(mat.size()), numCols_(mat[0].size())
 {
 	switch(type)
 	{
@@ -337,7 +364,7 @@ LAMatrix::LAMatrix(LAMatrix::ContainerType type, const std::vector<std::vector<d
 			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(mat));
 			break;
 		case BOOSTUBLAS:
-			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(mat));
+			matImpl = std::unique_ptr<MatImpl>(new UBLASMatrix(mat));
 			break;
 		default:
 			matImpl = std::unique_ptr<MatImpl>(new STDMatrix(mat));
@@ -366,4 +393,9 @@ size_t LAMatrix::num_rows() const
 size_t LAMatrix::num_cols() const
 {
 	return numCols_;
+};
+
+LAMatrix::ContainerType LAMatrix::container_type() const
+{
+	return contType;
 };

@@ -5,6 +5,7 @@
 #include <QuadrilateralFE.h>
 #include <Quadrature.h>
 #include <QuadratureGenerator.h>
+#include <Mapping.h>
 #include <CartesianMapping.h>
 #include <FECalculationEngine.h>
 #include <LAContainers.h>
@@ -12,6 +13,8 @@
 #include <BCCalculationEngine.h>
 #include <LAOperations.h>
 #include <CGSolver.h>
+#include <Preconditioner.h>
+#include <SparseMatrix.h>
 
 #define NAME "FEM"
 
