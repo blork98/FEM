@@ -2,6 +2,7 @@
 #define SPARSEMATRIX_H_
 
 #include <vector>
+#include <LAContainers.h>
 
 class SparseMatrix
 {
@@ -16,12 +17,13 @@ public:
 	SparseMatrix& operator /= ( double a );
 
 	const double& operator() (unsigned int i, unsigned int j ) const;
-	double& operator() (unsigned int i, unsigned int j );
+	void vec_multiply(LAVector& in, LAVector& out) const;
 
 private:
 	std::vector<double> val_; 
 	std::vector<unsigned int> colInd_, rowPtr_;
 	size_t numRows_, numCols_;
+	const double zero_; 
 };
 
 #endif
